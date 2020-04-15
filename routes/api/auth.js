@@ -11,15 +11,15 @@ const Users = require('../../models/Users')
 // @route   GET api/auth
 // @desc    Test route
 // @access  Public
-router.get('/', auth, async (req, res) => {
-  try {
-    const user = await await Users.findById(req.user.id).select('-password')
-    res.json(user)
-  } catch (err) {
-    console.error(err.message)
-    res.status(500).send('Server Error')
-  }
-})
+// router.get('/', auth, async (req, res) => {
+//   try {
+//     const user = await await Users.findById(req.user.id).select('-password')
+//     res.json(user)
+//   } catch (err) {
+//     console.error(err.message)
+//     res.status(500).send('Server Error')
+//   }
+// })
 
 // @route    POST api/auth
 // @desc     Authenticate user & get token
@@ -55,21 +55,17 @@ router.post(
           .json({ errors: [{ msg: 'Invalid Credentials' }] })
       }
 
-      const payload = {
-        user: {
-          id: user.id,
-        },
-      }
+      const payload = { user: {
+        id: user.id
+      } };
 
-      jwt.sign(
+      const token = jwt.sign(
         payload,
         config.get('jwtSecret'),
-        { expiresIn: 360000 },
-        (err, token) => {
-          if (err) throw err
-          res.json({ token })
-        }
-      )
+        { expiresIn: 360000 });
+        
+      res.cookie('token', token, { httpOnly: true })
+            .sendStatus(200);
     } catch (err) {
       console.error(err.message)
       res.status(500).send('Server error')
