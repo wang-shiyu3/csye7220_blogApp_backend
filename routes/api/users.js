@@ -7,6 +7,8 @@ const { check, validationResult } = require('express-validator')
 
 const Users = require('../../models/Users')
 
+
+
 // @route   POST api/users
 // @desc    Register user
 // @access  Public
@@ -33,7 +35,7 @@ router.post(
         errors: errors.array(),
       })
     }
-
+    
     const { name, email, password } = req.body
 
     try {
@@ -55,25 +57,26 @@ router.post(
 
       user.password = await bcrypt.hash(password, salt)
 
-      await user.save()
+      await user.save(function(err) {
+        if (err) {
+          res.status(500)
+            .send("Error registering new user please try again.");
+        }
+      });
 
-      const payload = {
-        user: {
-          id: user.id,
-        },
-      }
 
-      jwt.sign(
+      const payload = { user: {
+        id: user.id
+      } };
+
+      const token = jwt.sign(
         payload,
         config.get('jwtSecret'),
-        {
-          expiresIn: 360000,
-        },
-        (err, token) => {
-          if (err) throw err
-          res.json({ token })
-        }
-      )
+        { expiresIn: 360000 });
+        
+      res.cookie('token', token, { httpOnly: true })
+            .sendStatus(200);
+      
     } catch (err) {
       console.error(err.message)
       res.status(500).send('Server Error')

@@ -1,17 +1,53 @@
 const express = require('express');
 const connectDB = require('./config/db');
-
+const cors = require('cors')
+const https = require('https');
+const fs = require('fs');
+const helmet = require('helmet')
+const cookieParser = require('cookie-parser')
 const app = express();
+const withAuth = require('./middleware/auth')
 
 // Connect Database
 connectDB();
+
+// app.use((req, res, next) => {
+//     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000')
+//     res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
+//     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE')
+//     res.setHeader('Access-Control-Allow-Credentials', true)
+  
+//     next()
+//   })
 
 // Initailize Middleware
 app.use(express.json({
     extended: false
 }));
 
+console.log(process.env.CLIENT)
+
+const corsOptions = {
+    origin: process.env.CLIENT,
+    credentials: true
+}
+
+app.use(cors(corsOptions))
+
+app.use(cookieParser())
+
+app.use(helmet())
+app.use(helmet.contentSecurityPolicy({
+    directives: {
+        defaultSrc: ["'self'"],
+    }
+}))
+
 app.get('/', (req, res) => res.send('API Running'));
+
+app.get('/checkToken', withAuth, function(req, res) {
+res.sendStatus(200);
+});
 
 // Define Routes
 app.use('/api/users', require('./routes/api/users'));

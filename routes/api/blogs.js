@@ -29,11 +29,10 @@ router.post(
       return res.status(400).json({ errors: errors.array() })
     }
 
-    const { name, image, text } = req.body
+    const { name, text } = req.body
 
     const blogField = {}
     if (name) blogField.name = name
-    if (image) blogField.image = image
     if (text) blogField.text = text
 
     try {
