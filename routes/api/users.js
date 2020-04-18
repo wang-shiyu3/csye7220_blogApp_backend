@@ -69,14 +69,15 @@ router.post(
         id: user.id
       } };
 
-      const token = jwt.sign(
+      jwt.sign(
         payload,
         config.get('jwtSecret'),
-        { expiresIn: 360000 });
-        
-      res.cookie('token', token, { httpOnly: true })
-            .sendStatus(200);
-      
+        { expiresIn: 360000 },
+        (err, token) => {
+          if (err) throw err
+          res.json({ token })
+        }
+      )      
     } catch (err) {
       console.error(err.message)
       res.status(500).send('Server Error')
