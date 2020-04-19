@@ -2,8 +2,6 @@ const express = require('express');
 const connectDB = require('./config/db');
 const cors = require('cors')
 const https = require('https');
-const fs = require('fs');
-const helmet = require('helmet')
 const cookieParser = require('cookie-parser')
 const app = express();
 const withAuth = require('./middleware/auth')
@@ -32,19 +30,14 @@ const corsOptions = {
     credentials: true
 }
 
+app.use(function(req, res, next) {
+    req.headers['if-none-match'] = 'no-match-for-this';
+    next();    
+  });
 
 app.use(cors(corsOptions))
 
 app.use(cookieParser())
-
-app.disable('etag');
-
-app.use(helmet())
-app.use(helmet.contentSecurityPolicy({
-    directives: {
-        defaultSrc: ["'self'"],
-    }
-}))
 
 app.get('/', (req, res) => res.send('API Running'));
 
@@ -59,5 +52,7 @@ app.use('/api/blogs', require('./routes/api/blogs'));
 app.use('/api/comments', require('./routes/api/comments'));
 
 const PORT = process.env.PORT || 5000;
+
+app.set('etag', false);
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));

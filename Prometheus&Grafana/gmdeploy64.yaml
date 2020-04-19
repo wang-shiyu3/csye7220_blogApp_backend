@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: georgemichael
+spec:
+  selector:
+    matchLabels:
+      app: georgemichael
+  replicas: 64
+  template:
+    metadata:
+      labels:
+        app: georgemichael
+    spec:
+      containers:
+        - image: "dinorows/georgemichael"
+          imagePullPolicy: Always
+          name: georgemichael
+          ports:
+            - containerPort: 80
