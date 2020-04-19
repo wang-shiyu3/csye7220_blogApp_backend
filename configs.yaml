@@ -3,4 +3,4 @@ kind: ConfigMap
 metadata:
   name: server-side-configs
 data:
-  CLIENT: http://a31b5dfd0841e4ed0b972c88c65fcf05-2107054961.us-west-2.elb.amazonaws.com
+  CLIENT: http://a16bd1686dc1d4570b64ee38bbdae066-2099416460.us-west-2.elb.amazonaws.com:3000

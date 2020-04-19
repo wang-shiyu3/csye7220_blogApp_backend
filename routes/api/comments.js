@@ -1,12 +1,19 @@
 const express = require('express')
 const router = express.Router()
 const auth = require('../../middleware/auth')
+var onHeaders = require('on-headers')
 const jwt = require('jsonwebtoken')
 const config = require('config')
 const { check, validationResult } = require('express-validator')
 
 const Comments = require('../../models/Comments')
 const Blogs = require('../../models/Blogs')
+
+function scrubETag(res) {
+  onHeaders(res, function () {
+    this.removeHeader('ETag')
+  })
+}
 
 // @route    POST api/comments/addorupdate/:blog_id
 // @desc     Create or Update a Comment in a blog
@@ -47,7 +54,7 @@ router.post(
       )
 
       const returnPack = await comment.save()
-
+      scrubETag(res)
       res.json(returnPack)
     } catch (err) {
       console.error(err.message)

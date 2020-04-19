@@ -13,7 +13,7 @@ spec:
         app: todo-server-app
     spec:
       containers:
-      - image: doijoy46/csye7220backend:v3
+      - image: doijoy46/csye7220backend:v4
         name: container1
         ports:
         - containerPort: 5000
