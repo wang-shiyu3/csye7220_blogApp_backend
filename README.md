@@ -1,6 +1,6 @@
 # csye7220_blogApp_backend
 
-There are three basic procedures for deploying the project.
+There are three basic procedures for deploying the project into AWS EKS.
 
 1. Build up AWS EKS cluster 
 2. Apply Kubernetes services and deployments files into the cluster 
