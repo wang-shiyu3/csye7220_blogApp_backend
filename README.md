@@ -9,6 +9,7 @@ There are three basic procedures for deploying the project into AWS EKS.
 ## Prerequisite
 1. terraform installed
 2. Kubernetes installed
+3. authenticator installed
 ```
 minikube start
 ```
